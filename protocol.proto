@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./pb";
+
+message Struct {
+  // 名称
+  string Name = 1;
+  // 类型
+  string Kind = 2;
+  // 字段
+  repeated Field Fields = 3;
+}
+
+message Field {
+  // 名称
+  string Name = 1;
+  // 类型
+  string Kind = 2;
+  // 字段
+  map<string, string> tags = 3;
+}
+
+message Pkg {
+  // 包名
+  string Name = 1;
+  // 目前包使用的 imports
+  repeated string imports   = 2;
+  // 包内的结构体
+  repeated Struct Structs = 3;
+}
