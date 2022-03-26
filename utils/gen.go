@@ -17,4 +17,6 @@ func (g *Gen) Println(args ...interface{}) {
 	_, _ = fmt.Fprintln(&g.buf, args...)
 }
 
-func (g Gen) OutString() string { return g.buf.String() }
+func (g Gen) String() string { return g.buf.String() }
+
+func (g Gen) Bytes() []byte { return g.buf.Bytes() }

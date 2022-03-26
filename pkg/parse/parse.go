@@ -2,10 +2,10 @@ package parse
 
 import (
 	"encoding/json"
+	"github.com/The-night-elves/sp/pb"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"sp/pb"
 )
 
 // this file ga ast to protocol buffer
@@ -21,6 +21,12 @@ func (b *Builder) ParseFileByName(filename string) error {
 		return err
 	}
 
+	b.ParseByAstFile(file)
+
+	return nil
+}
+
+func (b *Builder) ParseByAstFile(file *ast.File) {
 	b.Pkg = &pb.Pkg{
 		Name:    file.Name.Name,
 		Imports: parseImports(file.Imports),
@@ -60,7 +66,6 @@ func (b *Builder) ParseFileByName(filename string) error {
 			return true
 		})
 	}
-	return nil
 }
 
 func (b *Builder) String() string {

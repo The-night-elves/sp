@@ -2,7 +2,7 @@ package testdata
 
 import (
 	"bytes"
-	"sp/pb"
+	"github.com/The-night-elves/sp/pb"
 )
 
 type Person struct {
