@@ -1,10 +1,12 @@
 package parse
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/The-night-elves/sp/pb"
 	"go/ast"
 	"go/parser"
+	"go/printer"
 	"go/token"
 )
 
@@ -32,6 +34,9 @@ func (b *Builder) ParseByAstFile(file *ast.File) {
 		Imports: parseImports(file.Imports),
 	}
 
+	fset := token.NewFileSet()
+	buf := new(bytes.Buffer)
+
 	for name, obj := range file.Scope.Objects {
 		if obj.Kind != ast.Typ {
 			continue
@@ -52,7 +57,14 @@ func (b *Builder) ParseByAstFile(file *ast.File) {
 						tags = parseStructTags(field.Tag.Value)
 					}
 
-					fieldKind := getFieldKind(field.Type)
+					var fieldKind string
+					if err := printer.Fprint(buf, fset, field.Type); err == nil {
+						fieldKind = buf.String()
+						buf.Reset()
+					} else {
+						fieldKind = getFieldKind(field.Type)
+					}
+
 					fieldName := getFieldName(field.Names, fieldKind)
 
 					fields = append(fields, &pb.Field{Name: fieldName, Kind: fieldKind, Tags: tags})

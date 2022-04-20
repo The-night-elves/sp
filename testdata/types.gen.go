@@ -2,23 +2,27 @@
 
 package testdata
 
+import (
+	"strconv"
+)
+
 func (p *PersonUpdate) Update() ([]string, []any) {
 	cols := make([]string, 0, 3)
 	vals := make([]any, 0, 3)
 	var index = 1
 	if p.Name != nil {
 		vals = append(vals, *p.Name)
-		cols = append(cols, "name=$1")
+		cols = append(cols, "name=$"+strconv.Itoa(index))
 		index++
 	}
 	if p.Age != nil {
 		vals = append(vals, *p.Age)
-		cols = append(cols, "age=$2")
+		cols = append(cols, "age=$"+strconv.Itoa(index))
 		index++
 	}
 	if p.Email != nil {
 		vals = append(vals, *p.Email)
-		cols = append(cols, "email=$3")
+		cols = append(cols, "email=$"+strconv.Itoa(index))
 		index++
 	}
 	return cols, vals

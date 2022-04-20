@@ -42,7 +42,10 @@ func getFieldKind(raw any) (kind string) {
 	case *ast.SelectorExpr:
 		kind = x.X.(*ast.Ident).Name + "." + x.Sel.Name
 	case *ast.ArrayType:
-		kind = "[]" + x.Elt.(*ast.Ident).Name
+		switch v := x.Elt.(type) {
+		case *ast.Ident:
+			kind = "[]" + v.Name
+		}
 	case *ast.Ident:
 		kind = x.Name
 	}
