@@ -20,6 +20,8 @@ message Field {
   string Kind = 2;
   // 字段
   map<string, string> tags = 3;
+  // 结构体
+  Struct struct = 4;
 }
 
 message Pkg {

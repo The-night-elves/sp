@@ -1,12 +1,10 @@
 package parse
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/The-night-elves/sp/pb"
 	"go/ast"
 	"go/parser"
-	"go/printer"
 	"go/token"
 )
 
@@ -34,9 +32,6 @@ func (b *Builder) ParseByAstFile(file *ast.File) {
 		Imports: parseImports(file.Imports),
 	}
 
-	fset := token.NewFileSet()
-	buf := new(bytes.Buffer)
-
 	for name, obj := range file.Scope.Objects {
 		if obj.Kind != ast.Typ {
 			continue
@@ -48,33 +43,16 @@ func (b *Builder) ParseByAstFile(file *ast.File) {
 		}
 
 		ast.Inspect(spec.Type, func(n ast.Node) bool {
-			switch x := n.(type) {
-			case *ast.StructType:
-				fields := make([]*pb.Field, 0, len(x.Fields.List))
-				for _, field := range x.Fields.List {
-					var tags map[string]string
-					if field.Tag != nil {
-						tags = parseStructTags(field.Tag.Value)
-					}
-
-					var fieldKind string
-					if err := printer.Fprint(buf, fset, field.Type); err == nil {
-						fieldKind = buf.String()
-						buf.Reset()
-					} else {
-						fieldKind = getFieldKind(field.Type)
-					}
-
-					fieldName := getFieldName(field.Names, fieldKind)
-
-					fields = append(fields, &pb.Field{Name: fieldName, Kind: fieldKind, Tags: tags})
-				}
-
-				if len(fields) > 0 {
-					b.Structs = append(b.Structs, &pb.Struct{Name: name, Fields: fields})
-				}
+			_, kind, fields := parseNode(n)
+			if len(fields) == 0 {
 				return false
 			}
+
+			b.Structs = append(b.Structs, &pb.Struct{
+				Name:   name,
+				Kind:   kind,
+				Fields: fields,
+			})
 			return true
 		})
 	}
