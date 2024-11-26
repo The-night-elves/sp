@@ -2,28 +2,43 @@
 
 package testdata
 
-import (
-	"strconv"
-)
+import "strconv"
 
-func (p *PersonUpdate) Update() ([]string, []any) {
-	cols := make([]string, 0, 3)
-	vals := make([]any, 0, 3)
-	var index = 1
+func (p *PersonUpdate) Update(args []any) ([]string, []any) {
+	cols := make([]string, 0, 4)
 	if p.Name != nil {
-		vals = append(vals, *p.Name)
-		cols = append(cols, "name=$"+strconv.Itoa(index))
-		index++
+		args = append(args, *p.Name)
+		cols = append(cols, "uname = $"+strconv.Itoa(len(args)))
 	}
 	if p.Age != nil {
-		vals = append(vals, *p.Age)
-		cols = append(cols, "age=$"+strconv.Itoa(index))
-		index++
+		args = append(args, *p.Age)
+		cols = append(cols, "age = $"+strconv.Itoa(len(args)))
 	}
 	if p.Email != nil {
-		vals = append(vals, *p.Email)
-		cols = append(cols, "email=$"+strconv.Itoa(index))
-		index++
+		args = append(args, *p.Email)
+		cols = append(cols, "email = $"+strconv.Itoa(len(args)))
 	}
-	return cols, vals
+	if p.Times1 != nil {
+		_cols, _args := p.Times1.Update(args)
+		args = append(args, _args...)
+		cols = append(cols, _cols...)
+	}
+	return cols, args
+}
+
+func (t *Times) Update(args []any) ([]string, []any) {
+	cols := make([]string, 0, 3)
+	if t.CreatedAt != nil {
+		args = append(args, *t.CreatedAt)
+		cols = append(cols, "createdat = $"+strconv.Itoa(len(args)))
+	}
+	if t.UpdatedAt != nil {
+		args = append(args, *t.UpdatedAt)
+		cols = append(cols, "updatedat = $"+strconv.Itoa(len(args)))
+	}
+	if t.DeletedAt != nil {
+		args = append(args, *t.DeletedAt)
+		cols = append(cols, "deletedat = $"+strconv.Itoa(len(args)))
+	}
+	return cols, args
 }

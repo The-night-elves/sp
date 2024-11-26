@@ -11,12 +11,19 @@ type Person struct {
 	Email string
 }
 
-//go:generate ../cmd/sql_update_by_struct/sql_update_by_struct -type PersonUpdate
+//go:generate ../cmd/sql_update_by_struct/sql_update_by_struct -type PersonUpdate,Times -tag db -func_name Update
 
 type PersonUpdate struct {
-	Name  *string
-	Age   *uint8
-	Email *string
+	Name   *string `db:"uname"`
+	Age    *uint8
+	Email  *string
+	Times1 *Times
+}
+
+type Times struct {
+	CreatedAt *int64
+	UpdatedAt *int64
+	DeletedAt *int64
 }
 
 // 其他类型
