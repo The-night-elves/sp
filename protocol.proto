@@ -28,7 +28,7 @@ message Pkg {
   // 包名
   string Name = 1;
   // 目前包使用的 imports
-  repeated string imports   = 2;
+  repeated string imports = 2;
   // 包内的结构体
   repeated Struct Structs = 3;
 }
